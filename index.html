@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Catbankau</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+</head>
+<body>
+  <h2>Login / Register</h2>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+  <div id="status"></div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHsJpZzzev5pBGirCfhXZN0Bw1zKcCsk",
+      authDomain: "catbankau.firebaseapp.com",
+      projectId: "catbankau",
+      storageBucket: "catbankau.appspot.com",
+      messagingSenderId: "694383874365",
+      appId: "1:694383874365:web:daea715fef30e8fbeaf554"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => document.getElementById("status").innerText = "Login successful")
+        .catch(err => document.getElementById("status").innerText = err.message);
+    }
+
+    function register() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+          return db.collection("users").doc(cred.user.uid).set({ points: 1000 });
+        })
+        .then(() => document.getElementById("status").innerText = "Registered and initialized!")
+        .catch(err => document.getElementById("status").innerText = err.message);
+    }
+  </script>
+</body>
+</html>
